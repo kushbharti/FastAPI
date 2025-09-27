@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, field_validator
 from typing import List, Dict, Optional, Annotated
 
 
@@ -11,6 +11,26 @@ class Patient(BaseModel):
     married: bool = False
     allergies:Annotated[Optional[List[str]], Field(default= None, max_length=10, Description = 'Diseases.? ')] 
     contact_detail: Dict[str, str] = None
+    
+    @field_validator('email')
+    @classmethod
+    def validate_email(cls, email):
+        
+        valid_email = ['gmail.com', 'hdfc.com']
+        validate_email = email.split('@')[-1]
+
+        if validate_email not in valid_email:
+            raise ValueError('Not a valid Email')
+        return email
+    
+    
+    @field_validator('name')
+    @classmethod
+    def nmae_validator(cls,value):
+        
+        return value.upper()
+    
+    
     
     
 def insert_patient(patient: Patient):
